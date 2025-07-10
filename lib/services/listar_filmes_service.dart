@@ -14,6 +14,8 @@ const _filmes = [
     titulo: 'A Felicidade Não se Compra',
     descricao:
         'Um homem desesperado recebe a visita de um anjo que mostra como seria o mundo sem ele.',
+    pathImagem:
+        'https://m.media-amazon.com/images/S/pv-target-images/56e2bdb4394c06bdabd4b80e7b33db2f7bbb1936e92045955eeaf41fdaeab7c3.jpg',
     generos: ['Clássico', 'Drama', 'Fantasia'],
   ),
   FilmeModel(
@@ -21,6 +23,8 @@ const _filmes = [
     titulo: 'O Fabuloso Destino de Amélie Poulain',
     descricao:
         'Amélie decide mudar a vida das pessoas ao seu redor enquanto busca sua própria felicidade.',
+    pathImagem:
+        'https://m.media-amazon.com/images/S/pv-target-images/61d33bd69fcd549d495f01fd8f777f59298cdc68949ae3cd54dedcccf0cc5466.jpg',
     generos: ['Comédia', 'Romance'],
   ),
   FilmeModel(
@@ -28,6 +32,8 @@ const _filmes = [
     titulo: 'Curtindo a Vida Adoidado',
     descricao:
         'Um estudante do ensino médio decide faltar à escola para viver um dia inesquecível.',
+    pathImagem:
+        'https://www.filmographia.com.br/wp-content/uploads/2023/07/poster_curtindo_a_vida_adoidado.jpg',
     generos: ['Comédia', 'Clássico'],
   ),
   FilmeModel(
