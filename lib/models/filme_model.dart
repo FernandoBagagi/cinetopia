@@ -1,13 +1,13 @@
 import 'dart:convert';
 
 class FilmeModel {
-  String id;
-  String titulo;
-  String descricao;
-  String? pathImagem;
-  List<String> generos;
+  final String id;
+  final String titulo;
+  final String descricao;
+  final String? pathImagem;
+  final List<String> generos;
 
-  FilmeModel({
+  const FilmeModel({
     required this.id,
     String? titulo,
     String? descricao,
