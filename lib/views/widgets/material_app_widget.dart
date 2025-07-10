@@ -1,5 +1,5 @@
-import 'package:cinetopia/screens/filmes_screen.dart';
-import 'package:cinetopia/widgets/cores.dart' as cores;
+import 'package:cinetopia/views/screens/filmes_screen.dart';
+import 'package:cinetopia/views/widgets/cores.dart' as cores;
 import 'package:flutter/material.dart';
 
 class MaterialAppWidget extends StatelessWidget {
