@@ -1,4 +1,4 @@
-import 'package:cinetopia/screens/home_screen.dart';
+import 'package:cinetopia/screens/filmes_screen.dart';
 import 'package:cinetopia/widgets/cores.dart' as cores;
 import 'package:flutter/material.dart';
 
@@ -10,7 +10,7 @@ class MaterialAppWidget extends StatelessWidget {
     return MaterialApp(
       title: 'Cinetopia',
       theme: _buildThemeData(),
-      home: HomeScreen(),
+      home: FilmesScreen(),
     );
   }
 
