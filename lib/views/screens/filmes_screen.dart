@@ -1,4 +1,5 @@
 import 'package:cinetopia/viewmodels/filmes_view_model.dart';
+import 'package:cinetopia/views/widgets/card_filme.dart';
 import 'package:flutter/material.dart';
 
 class FilmesScreen extends StatefulWidget {
@@ -38,143 +39,111 @@ class _FilmesScreenState extends State<FilmesScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        leading: const Icon(Icons.arrow_back),
-        title: viewModel.isPesquisaAtiva
-            ? TextFormField(
-                focusNode: pesquisarFocusNode,
-                controller: pesquisaController,
-                decoration: const InputDecoration(
-                  hintText: 'Pesquisar ...',
-                  border: InputBorder.none,
-                ),
-                onTapOutside: (PointerDownEvent _) {
-                  pesquisarFocusNode.unfocus();
-                  viewModel.desativarPesquisa();
-                },
-                onFieldSubmitted: (String value) {
-                  pesquisarFocusNode.unfocus();
-                  viewModel.desativarPesquisa();
-                },
-              )
-            : const Text('Filmes populares'),
-        centerTitle: true,
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.search),
-            onPressed: () {
-              pesquisarFocusNode.requestFocus();
-              viewModel.ativarPesquisa();
-            },
-          ),
-        ],
-      ),
-      body: viewModel.isCarregando
-          ? const Center(child: CircularProgressIndicator())
-          : viewModel.hasErro
-          ? Center(child: Text(viewModel.erro ?? 'Erro desconhecido'))
-          : viewModel.filmesFiltrados.isEmpty
-          ? const Center(child: Text('Nenhum filme encontrado'))
-          : SingleChildScrollView(
-              padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 8),
-              child: Center(
-                child: Wrap(
-                  spacing: 16,
-                  runSpacing: 16,
-                  children: _buildListaFilmes(),
-                ),
-              ),
-            ),
-
-      /*bottomNavigationBar: BottomNavigationBar(
-        items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Início'),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.favorite),
-            label: 'Favoritos',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.settings),
-            label: 'Configurações',
-          ),
-        ],
-        currentIndex: 0,
-        onTap: (index) {
-          // Ação ao selecionar um item
-        },
-      ),*/
+      appBar: _appBar(),
+      body: _body(),
+      bottomNavigationBar: _bottomNavigationBar(),
     );
   }
 
-  List<Widget> _buildListaFilmes() {
-    return List.generate(viewModel.filmesFiltrados.length, (int index) {
-      final filme = viewModel.filmesFiltrados[index];
-      return Container(
-        constraints: BoxConstraints(
-          minHeight: 120.0,
-          minWidth: 300.0 - 8.0,
-          maxWidth: 600.0,
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          spacing: 8.0,
-          children: [
-            SizedBox(
-              width: 90,
-              height: 120,
-              child: filme.pathImagem == null || filme.pathImagem!.isEmpty
-                  ? Image.asset('assets/images/popular.png', fit: BoxFit.cover)
-                  : Image.network(
-                      filme.pathImagem!,
-                      fit: BoxFit.cover,
-                      loadingBuilder: _loadingBuilder,
-                    ),
-            ),
-            Expanded(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    filme.titulo,
-                    style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                      color: Theme.of(context).colorScheme.onPrimary,
-                    ),
-                  ),
-                  Text(filme.descricao,
-                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: Color(0xFFA5A5A5),
-                    ),),
-                ],
-              ),
-            ),
-          ],
-        ),
-      );
-    });
+  AppBar _appBar() {
+    return AppBar(
+      leading: const Icon(Icons.arrow_back),
+      centerTitle: true,
+      title: viewModel.isPesquisaAtiva
+          ? _campoPesquisa()
+          : const Text('Filmes populares'),
+      actions: [_botaoPesquisa()],
+    );
   }
 
-  Widget _loadingBuilder(
-    BuildContext context,
-    Widget child,
-    ImageChunkEvent? loadingProgress,
-  ) {
-    return loadingProgress == null
-        ? child
-        : Container(
-            width: 90,
-            height: 120,
-            color: Colors.black,
-            child: Center(
-              child: CircularProgressIndicator(
-                value: loadingProgress.expectedTotalBytes != null
-                    ? loadingProgress.cumulativeBytesLoaded /
-                          (loadingProgress.expectedTotalBytes ?? 1)
-                    : null,
-              ),
+  Widget _campoPesquisa() {
+    return TextFormField(
+      focusNode: pesquisarFocusNode,
+      controller: pesquisaController,
+      decoration: const InputDecoration(
+        hintText: 'Pesquisar ...',
+        border: InputBorder.none,
+      ),
+      onTapOutside: (PointerDownEvent _) {
+        _fecharPesquisa();
+      },
+      onFieldSubmitted: (String _) {
+        _fecharPesquisa();
+      },
+    );
+  }
+
+  void _fecharPesquisa() {
+    pesquisarFocusNode.unfocus();
+    viewModel.desativarPesquisa();
+  }
+
+  IconButton _botaoPesquisa() {
+    return IconButton(
+      icon: const Icon(Icons.search),
+      onPressed: () {
+        pesquisarFocusNode.requestFocus();
+        viewModel.ativarPesquisa();
+      },
+    );
+  }
+
+  Widget _body() {
+    return viewModel.isCarregando
+        ? const Center(child: CircularProgressIndicator())
+        : viewModel.hasErro
+        ? Center(child: Text(viewModel.erro ?? 'Erro desconhecido'))
+        : viewModel.filmesFiltrados.isEmpty
+        ? const Center(child: Text('Nenhum filme encontrado'))
+        : _wrapFilmes();
+  }
+
+  Widget _wrapFilmes() {
+    return SingleChildScrollView(
+      padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 8),
+      child: LayoutBuilder(
+        builder: (BuildContext context, BoxConstraints constraints) {
+          double maxWidth = constraints.maxWidth;
+          const minCardWidth = 450.0;
+          int cardsPerRow = (maxWidth / minCardWidth).floor();
+          double cardWidth = (maxWidth / cardsPerRow);
+
+          Widget cardFilmeListGenerator(int index) {
+            final filme = viewModel.filmesFiltrados[index];
+            return CardFilme(filme, width: cardWidth - 16.0);
+          }
+
+          return Wrap(
+            spacing: 16,
+            runSpacing: 16,
+            children: List.generate(
+              viewModel.filmesFiltrados.length,
+              cardFilmeListGenerator,
             ),
           );
+        },
+      ),
+    );
   }
+
+  Widget _bottomNavigationBar() {
+    return BottomNavigationBar(
+      items: _buildItemsBottomNavigationBar,
+      currentIndex: 0,
+      onTap: _onTapItemBottomNavigationBar,
+    );
+  }
+
+  List<BottomNavigationBarItem> get _buildItemsBottomNavigationBar {
+    return const [
+      BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Início'),
+      BottomNavigationBarItem(icon: Icon(Icons.favorite), label: 'Favoritos'),
+      BottomNavigationBarItem(
+        icon: Icon(Icons.settings),
+        label: 'Configurações',
+      ),
+    ];
+  }
+
+  void _onTapItemBottomNavigationBar(int index) {}
 }
